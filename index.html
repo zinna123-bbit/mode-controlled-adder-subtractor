@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0b1324" />
+  <meta name="description" content="Interactive 4-bit mode-controlled binary adder-subtractor simulator for a Semester III Computer Organisation mini-project." />
+  <title>Binary Adder–Subtractor | Group F</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="stylesheet" href="styles.css" />
+  <script defer src="adder.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+  <header class="topbar">
+    <a class="brand" href="#home" aria-label="Binary Lab home">
+      <span class="brand-mark">Σ</span>
+      <span><strong>BINARY LAB</strong><small>COMPUTER ORGANISATION · SEM III</small></span>
+    </a>
+    <nav aria-label="Main navigation">
+      <a href="#simulator">Simulator</a>
+      <a href="#circuit">Circuit</a>
+      <a href="#theory">Theory</a>
+      <a href="#team">Team</a>
+      <a href="#resources">Resources</a>
+    </nav>
+    <span class="project-chip">GROUP F <span class="status-dot"></span></span>
+  </header>
+
+  <main id="home">
+    <section class="hero section-wrap">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="eyebrow-line"></span> MINI PROJECT · QUESTION 06</p>
+        <h1>One circuit.<br /><span>Two operations.</span></h1>
+        <p class="hero-lede">A 4-bit mode-controlled binary adder–subtractor built from XOR gates and full adders. Switch the mode, change the inputs, and watch the carry chain work.</p>
+        <div class="hero-actions">
+          <a class="primary-btn" href="#simulator">Open simulator <span aria-hidden="true">↘</span></a>
+          <a class="text-link" href="#circuit">Explore the circuit <span aria-hidden="true">→</span></a>
+        </div>
+        <div class="hero-stats">
+          <div><strong>4-bit</strong><span>data width</span></div>
+          <div><strong>4 × FA</strong><span>full adders</span></div>
+          <div><strong>4 × XOR</strong><span>controlled gates</span></div>
+        </div>
+      </div>
+      <div class="hero-art" aria-label="Conceptual illustration of a four-bit adder-subtractor">
+        <div class="orbit orbit-a"></div><div class="orbit orbit-b"></div>
+        <div class="floating-label label-a">MODE · M</div>
+        <div class="floating-label label-b">CARRY CHAIN</div>
+        <div class="chip-core">
+          <div class="chip-head"><span class="chip-led"></span><span>ALU BLOCK / 04</span></div>
+          <div class="chip-symbol">Σ</div>
+          <div class="chip-foot"><span>A[3:0]</span><span>B[3:0]</span><span>S[3:0]</span></div>
+        </div>
+        <div class="signal signal-left">1010</div><div class="signal signal-right">0111</div>
+        <div class="signal signal-bottom">S = A + (B ⊕ M) + M</div>
+      </div>
+    </section>
+
+    <section class="section-wrap simulator-section" id="simulator">
+      <div class="section-heading">
+        <div><p class="eyebrow">01 / LIVE EXPERIMENT</p><h2>Try the circuit</h2></div>
+        <p>Enter two 4-bit binary numbers, select the operation, and inspect each full-adder stage.</p>
+      </div>
+
+      <div class="sim-grid">
+        <section class="panel input-panel" aria-labelledby="input-title">
+          <div class="panel-topline"><span class="panel-kicker">INPUT REGISTER</span><span class="panel-index">A / B</span></div>
+          <h3 id="input-title">Set your operands</h3>
+          <div class="operand-row">
+            <label for="input-a">Operand A <span>4 BITS</span></label>
+            <input id="input-a" class="binary-input" type="text" inputmode="numeric" maxlength="4" value="0101" autocomplete="off" spellcheck="false" aria-describedby="input-a-hint" />
+            <div id="input-a-hint" class="input-hint"><span class="bit-dot"></span> 0–15 unsigned input</div>
+          </div>
+          <div class="operand-row">
+            <label for="input-b">Operand B <span>4 BITS</span></label>
+            <input id="input-b" class="binary-input" type="text" inputmode="numeric" maxlength="4" value="0011" autocomplete="off" spellcheck="false" aria-describedby="input-b-hint" />
+            <div id="input-b-hint" class="input-hint"><span class="bit-dot"></span> 0–15 unsigned input</div>
+          </div>
+          <div class="mode-block">
+            <div class="mode-heading"><label>Mode control <span class="mode-tag">M</span></label><span id="mode-value" class="mode-value">M = 0</span></div>
+            <div class="mode-switch" role="group" aria-label="Select arithmetic operation">
+              <button class="mode-option active" id="add-mode" type="button" aria-pressed="true"><span class="mode-binary">0</span><span><strong>ADD</strong><small>A + B</small></span></button>
+              <button class="mode-option" id="sub-mode" type="button" aria-pressed="false"><span class="mode-binary">1</span><span><strong>SUBTRACT</strong><small>A − B</small></span></button>
+            </div>
+          </div>
+          <div class="quick-tests">
+            <span>QUICK TESTS</span>
+            <button type="button" data-a="0101" data-b="0011" data-mode="0">5 + 3</button>
+            <button type="button" data-a="0101" data-b="0011" data-mode="1">5 − 3</button>
+            <button type="button" data-a="0011" data-b="0101" data-mode="1">3 − 5</button>
+            <button type="button" data-a="0111" data-b="0001" data-mode="0">Overflow</button>
+          </div>
+          <p id="validation-message" class="validation-message" role="alert" aria-live="polite"></p>
+        </section>
+
+        <section class="panel output-panel" aria-labelledby="output-title">
+          <div class="panel-topline"><span class="panel-kicker">RESULT REGISTER</span><span class="live-pill"><span></span> LIVE OUTPUT</span></div>
+          <h3 id="output-title">Computed result</h3>
+          <div class="result-expression"><span id="expr-a">0101</span><span id="expr-op">+</span><span id="expr-b">0011</span><span class="equals">=</span></div>
+          <div class="result-display">
+            <div class="result-caption">4-BIT RESULT <span id="result-decimal">DECIMAL 8</span></div>
+            <div class="result-bits" id="result-bits" aria-label="Result bits">1 0 0 0</div>
+            <div class="result-subline" id="result-description">5 + 3 = 8</div>
+          </div>
+          <div class="flag-grid">
+            <div class="flag-card"><span class="flag-name">CARRY OUT</span><strong id="flag-carry">0</strong><small id="carry-note">No carry</small></div>
+            <div class="flag-card"><span class="flag-name">BORROW</span><strong id="flag-borrow">—</strong><small id="borrow-note">Addition mode</small></div>
+            <div class="flag-card"><span class="flag-name">OVERFLOW</span><strong id="flag-overflow">1</strong><small>Signed 2's complement</small></div>
+            <div class="flag-card"><span class="flag-name">ZERO</span><strong id="flag-zero">0</strong><small>Result is non-zero</small></div>
+          </div>
+          <div class="signed-note" id="signed-note">Signed interpretation: −8 (4-bit two's complement)</div>
+        </section>
+      </div>
+
+      <section class="panel trace-panel">
+        <div class="trace-header"><div><span class="panel-kicker">RIPPLE-CARRY TRACE</span><h3>Inside the four full adders</h3></div><span class="trace-note">Bit 0 is processed first</span></div>
+        <div class="table-scroll">
+          <table class="trace-table">
+            <thead><tr><th>Stage</th><th>Bit</th><th>Aᵢ</th><th>Bᵢ</th><th>Bᵢ ⊕ M</th><th>Carry in</th><th>Sum</th><th>Carry out</th></tr></thead>
+            <tbody id="trace-body">
+              <tr><td>FA₀</td><td>0</td><td>1</td><td>1</td><td>1</td><td>0</td><td class="sum-cell">0</td><td>1</td></tr>
+              <tr><td>FA₁</td><td>1</td><td>0</td><td>1</td><td>1</td><td>1</td><td class="sum-cell">0</td><td>1</td></tr>
+              <tr><td>FA₂</td><td>2</td><td>1</td><td>0</td><td>0</td><td>1</td><td class="sum-cell">0</td><td>1</td></tr>
+              <tr><td>FA₃</td><td>3</td><td>0</td><td>0</td><td>0</td><td>1</td><td class="sum-cell">1</td><td>0</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="trace-footer"><span><i class="legend-dot active-dot"></i> Active signal value = 1</span><span><i class="legend-dot"></i> Inactive signal value = 0</span><span id="carry-chain">Carry chain: 0 → 1 → 1 → 1 → 0</span></div>
+      </section>
+    </section>
+
+    <section class="section-wrap circuit-section" id="circuit">
+      <div class="section-heading">
+        <div><p class="eyebrow">02 / LOGIC ARCHITECTURE</p><h2>How the circuit is wired</h2></div>
+        <p>The mode line controls four XOR gates and the first carry input. Four full adders then form a ripple-carry chain.</p>
+      </div>
+      <div class="panel circuit-panel">
+        <div class="circuit-legend"><span><i class="line-key data-key"></i> Data path</span><span><i class="line-key mode-key"></i> Mode control</span><span><i class="line-key carry-key"></i> Carry path</span></div>
+        <div class="circuit-scroll">
+          <svg class="circuit-svg" viewBox="0 0 1040 405" role="img" aria-labelledby="circuit-title circuit-desc">
+            <title id="circuit-title">Four-bit adder-subtractor circuit block diagram</title>
+            <desc id="circuit-desc">Four XOR gates conditionally invert B using mode M. Their outputs and A bits feed four full adders connected by a ripple carry chain. M also supplies the initial carry-in.</desc>
+            <defs>
+              <marker id="arrowData" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6" fill="none" stroke="#62b9ff" stroke-width="1.2"/></marker>
+              <marker id="arrowMode" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6" fill="none" stroke="#b69cff" stroke-width="1.2"/></marker>
+              <marker id="arrowCarry" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6" fill="none" stroke="#55d6a5" stroke-width="1.2"/></marker>
+            </defs>
+            <text x="22" y="39" class="svg-label">B INPUT</text>
+            <text x="22" y="253" class="svg-label">A INPUT</text>
+            <text x="22" y="345" class="svg-label mode-text">MODE M</text>
+            <g class="bit-labels"><text x="126" y="39">B₃</text><text x="126" y="91">B₂</text><text x="126" y="143">B₁</text><text x="126" y="195">B₀</text><text x="126" y="253">A₃</text><text x="126" y="283">A₂</text><text x="126" y="313">A₁</text><text x="126" y="343">A₀</text></g>
+            <g class="wire data-wire"><path d="M154 35 H213 V60 H250"/><path d="M154 87 H213 V112 H250"/><path d="M154 139 H213 V164 H250"/><path d="M154 191 H213 V216 H250"/></g>
+            <g class="xor-bank">
+              <rect x="250" y="45" width="82" height="31" rx="8"/><rect x="250" y="97" width="82" height="31" rx="8"/><rect x="250" y="149" width="82" height="31" rx="8"/><rect x="250" y="201" width="82" height="31" rx="8"/>
+              <text x="291" y="66">XOR₃</text><text x="291" y="118">XOR₂</text><text x="291" y="170">XOR₁</text><text x="291" y="222">XOR₀</text>
+            </g>
+            <text x="257" y="22" class="svg-small">Bᵢ ⊕ M</text>
+            <path class="wire mode-wire" d="M185 345 H223 V232 H237 M223 180 V177 H250 M223 128 V125 H250 M223 76 V73 H250" marker-end="url(#arrowMode)"/>
+            <path class="wire data-wire" d="M332 60 H406 M332 112 H406 M332 164 H406 M332 216 H406" marker-end="url(#arrowData)"/>
+            <g class="fa-bank">
+              <rect x="406" y="40" width="150" height="42" rx="9"/><rect x="406" y="92" width="150" height="42" rx="9"/><rect x="406" y="144" width="150" height="42" rx="9"/><rect x="406" y="196" width="150" height="42" rx="9"/>
+              <text x="481" y="66">FULL ADDER 3</text><text x="481" y="118">FULL ADDER 2</text><text x="481" y="170">FULL ADDER 1</text><text x="481" y="222">FULL ADDER 0</text>
+            </g>
+            <g class="wire data-wire"><path d="M154 253 H372 V61 H406"/><path d="M154 283 H372 V113 H406"/><path d="M154 313 H372 V165 H406"/><path d="M154 343 H372 V217 H406"/></g>
+            <g class="wire carry-wire"><path d="M556 217 H606 V165 H556" marker-end="url(#arrowCarry)"/><path d="M556 165 H632 V113 H556" marker-end="url(#arrowCarry)"/><path d="M556 113 H658 V61 H556" marker-end="url(#arrowCarry)"/><path d="M223 345 H595 V251 H481 V238" marker-end="url(#arrowMode)"/></g>
+            <g class="carry-tags"><text x="610" y="197">C₁</text><text x="636" y="145">C₂</text><text x="662" y="93">C₃</text><text x="495" y="263">C₀ = M</text></g>
+            <g class="wire data-wire"><path d="M556 61 H735 M556 113 H735 M556 165 H735 M556 217 H735" marker-end="url(#arrowData)"/></g>
+            <text x="760" y="39" class="svg-label">OUTPUT</text>
+            <g class="output-box"><rect x="735" y="45" width="128" height="31" rx="7"/><rect x="735" y="97" width="128" height="31" rx="7"/><rect x="735" y="149" width="128" height="31" rx="7"/><rect x="735" y="201" width="128" height="31" rx="7"/><text x="799" y="66">S₃</text><text x="799" y="118">S₂</text><text x="799" y="170">S₁</text><text x="799" y="222">S₀</text></g>
+            <path class="wire carry-wire" d="M556 40 H700 V19 H900" marker-end="url(#arrowCarry)"/><text x="900" y="16" class="svg-small">COUT</text>
+            <path class="wire mode-wire" d="M185 345 H915 V290" marker-end="url(#arrowMode)"/><rect x="865" y="290" width="120" height="45" rx="8" class="mode-box"/><text x="925" y="308" class="mode-box-title">CONTROL</text><text x="925" y="324" class="mode-box-sub">M = 0 / 1</text>
+            <text x="22" y="389" class="svg-footnote">Conceptual ripple-carry block diagram · FA₀ is the least-significant stage; FA₃ is the most-significant stage.</text>
+          </svg>
+        </div>
+        <div class="circuit-caption"><span class="caption-symbol">ƒ</span><p><strong>Key idea:</strong> XOR acts as a controlled inverter. When M = 0, B passes unchanged. When M = 1, every B bit is complemented and the initial carry adds the required +1.</p></div>
+      </div>
+    </section>
+
+    <section class="section-wrap theory-section" id="theory">
+      <div class="section-heading">
+        <div><p class="eyebrow">03 / WORKING PRINCIPLE</p><h2>The logic behind it</h2></div>
+        <p>The same full-adder chain handles both operations. Only the B input conditioning and the initial carry-in change.</p>
+      </div>
+      <div class="theory-grid">
+        <article class="theory-card formula-card"><span class="card-number">01 · MASTER EQUATION</span><h3>Unified arithmetic</h3><div class="formula">S = A + (B ⊕ M) + M</div><p>For each bit, XOR either preserves or complements B. The mode bit is also connected to the least-significant carry input.</p></article>
+        <article class="theory-card"><span class="card-number">02 · MODE TABLE</span><h3>One control signal</h3><table class="mini-table"><thead><tr><th>M</th><th>B ⊕ M</th><th>C₀</th><th>Operation</th></tr></thead><tbody><tr><td>0</td><td>B</td><td>0</td><td>Addition</td></tr><tr><td>1</td><td>~B</td><td>1</td><td>Subtraction</td></tr></tbody></table><p class="tiny-note">~B denotes the bitwise one's complement of B.</p></article>
+        <article class="theory-card"><span class="card-number">03 · FULL ADDER</span><h3>Per-bit equations</h3><div class="equation-stack"><code>Xᵢ = Bᵢ ⊕ M</code><code>Sumᵢ = Aᵢ ⊕ Xᵢ ⊕ Cᵢ</code><code>Cᵢ₊₁ = AᵢXᵢ + Cᵢ(Aᵢ ⊕ Xᵢ)</code></div><p>Each carry output becomes the next stage's carry input.</p></article>
+        <article class="theory-card"><span class="card-number">04 · STATUS FLAGS</span><h3>Interpreting the result</h3><ul class="flag-list"><li><b>Carry:</b> final carry-out from FA₃.</li><li><b>Borrow:</b> for unsigned subtraction, Borrow = NOT(Carry-out).</li><li><b>Overflow:</b> carry into MSB XOR carry out.</li><li><b>Zero:</b> 1 when all four result bits are 0.</li></ul><p class="tiny-note">The 4-bit result is modulo 16. Signed overflow is meaningful under two's-complement interpretation.</p></article>
+      </div>
+    </section>
+
+    <section class="section-wrap team-section" id="team">
+      <div class="team-heading"><div><p class="eyebrow">04 / PROJECT TEAM</p><h2>Built by Group F</h2><p>Computer Organisation · Semester III · Mini Project</p></div><div class="team-mark">F<span>06</span></div></div>
+      <div class="team-grid">
+        <article class="member-card"><span class="member-no">01</span><span class="member-avatar">M</span><div><h3>MD ALI ZINNA MOLLA</h3><p>Roll No. 27600125093</p></div></article>
+        <article class="member-card"><span class="member-no">02</span><span class="member-avatar">A</span><div><h3>ARGHA MAITY</h3><p>Roll No. 27600125094</p></div></article>
+        <article class="member-card"><span class="member-no">03</span><span class="member-avatar">A</span><div><h3>AKASHDIP SAH</h3><p>Roll No. 27600125095</p></div></article>
+        <article class="member-card"><span class="member-no">04</span><span class="member-avatar">S</span><div><h3>SHRUTI BISWAS</h3><p>Roll No. 27600125096</p></div></article>
+      </div>
+    </section>
+
+    <section class="section-wrap resources-section" id="resources">
+      <div class="section-heading">
+        <div><p class="eyebrow">05 / PROJECT MATERIALS</p><h2>Resources & downloads</h2></div>
+        <p>Keep the report, circuit notes, test vectors, and viva preparation together with the simulator.</p>
+      </div>
+      <div class="resources-grid">
+        <a class="resource-card" href="docs/PROJECT_REPORT.md" download><span class="resource-icon">RPT</span><span><strong>Mini-project report</strong><small>Full academic report</small></span><span class="resource-arrow">↓</span></a>
+        <a class="resource-card" href="docs/CIRCUIT_NOTES.md" download><span class="resource-icon">MD</span><span><strong>Circuit notes</strong><small>Equations, flags, and assumptions</small></span><span class="resource-arrow">↓</span></a>
+        <a class="resource-card" href="docs/TEST_VECTORS.csv" download><span class="resource-icon">CSV</span><span><strong>Test vectors</strong><small>Example input and output cases</small></span><span class="resource-arrow">↓</span></a>
+        <a class="resource-card" href="docs/VIVA_QUESTIONS.md" download><span class="resource-icon">Q&A</span><span><strong>Viva questions</strong><small>Questions with short answers</small></span><span class="resource-arrow">↓</span></a>
+        <a class="resource-card" href="assets/circuit-diagram.svg" download><span class="resource-icon">SVG</span><span><strong>Circuit diagram</strong><small>Scalable SVG diagram</small></span><span class="resource-arrow">↓</span></a>
+        <a class="resource-card" href="README.md" download><span class="resource-icon">TXT</span><span><strong>Setup instructions</strong><small>Run, test, and deploy guide</small></span><span class="resource-arrow">↓</span></a>
+      </div>
+    </section>
+
+    <section class="section-wrap takeaway-section">
+      <div class="takeaway-copy"><p class="eyebrow">PROJECT TAKEAWAY</p><h2>Subtraction is addition in disguise.</h2><p>By using two's complement, the circuit reuses the same full adders for both arithmetic operations. This reduces hardware duplication and demonstrates a core idea used in arithmetic logic units.</p></div>
+      <div class="takeaway-equation"><span>ADD</span><strong>A + B</strong><i>↔</i><span>SUBTRACT</span><strong>A + ~B + 1</strong></div>
+    </section>
+  </main>
+
+  <footer class="footer"><a class="brand" href="#home"><span class="brand-mark">Σ</span><span><strong>BINARY LAB</strong><small>GROUP F · QUESTION 06</small></span></a><p>Mode-Controlled 4-Bit Binary Adder–Subtractor</p><a href="#home" class="back-top">Back to top ↑</a></footer>
+</body>
+</html>

@@ -1,0 +1,9 @@
+A_binary,B_binary,M,operation,result_binary,result_unsigned,carry_out,borrow,signed_overflow,zero,signed_result
+0101,0011,0,ADD,1000,8,0,N/A,1,0,-8
+0101,0011,1,SUBTRACT,0010,2,1,0,0,0,2
+0011,0101,1,SUBTRACT,1110,14,0,1,0,0,-2
+0111,0001,0,ADD,1000,8,0,N/A,1,0,-8
+1111,0001,0,ADD,0000,0,1,N/A,0,1,0
+0000,0000,1,SUBTRACT,0000,0,1,0,0,1,0
+0000,0001,1,SUBTRACT,1111,15,0,1,0,0,-1
+1111,1111,1,SUBTRACT,0000,0,1,0,0,1,0

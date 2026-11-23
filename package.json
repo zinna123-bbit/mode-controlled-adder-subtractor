@@ -1,0 +1,9 @@
+{
+  "name": "mode-controlled-adder-subtractor",
+  "version": "1.0.0",
+  "private": true,
+  "description": "4-bit binary adder-subtractor simulator for a Computer Organisation mini-project.",
+  "scripts": {
+    "test": "node --test tests/adder.test.cjs"
+  }
+}
